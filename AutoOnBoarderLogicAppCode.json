@@ -1,0 +1,133 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Add_user_to_group": {
+                "inputs": {
+                    "body": {
+                        "@@odata.id": "@body('Create_user')?['id']"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['azuread']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v1.0/groups/@{encodeURIComponent('8ff55fbc-a525-40b5-ac3b-f4156106a187')}/members/$ref"
+                },
+                "runAfter": {
+                    "Create_user": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "Create_user": {
+                "inputs": {
+                    "body": {
+                        "accountEnabled": true,
+                        "displayName": "@{concat(triggerBody()['firstname'], triggerBody()['lastname'])}",
+                        "givenName": "@{triggerBody()['firstname']}@{triggerBody()['lastname']}",
+                        "mailNickname": "@triggerBody()['firstname']",
+                        "passwordProfile": {
+                            "password": ""
+                        },
+                        "userPrincipalName": "@{concat(triggerBody()['firstname'], '.', triggerBody()['lastname'], '@', 'brianmeinert1gmail.onmicrosoft.com')}"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['azuread']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v1.0/users"
+                },
+                "runAfter": {},
+                "type": "ApiConnection"
+            },
+            "Send_an_email_(V2)": {
+                "inputs": {
+                    "body": {
+                        "Body": "<p>hello and welcome to our organization!</p>",
+                        "Importance": "Normal",
+                        "Subject": "Welcome",
+                        "To": "@triggerBody()['email']"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['outlook']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v2/Mail"
+                },
+                "runAfter": {
+                    "Add_user_to_group": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "schema": {
+                        "$schema": "http://json-schema.org/draft-04/schema#",
+                        "properties": {
+                            "department": {
+                                "type": "string"
+                            },
+                            "firstname": {
+                                "type": "string"
+                            },
+                            "jobtitle": {
+                                "type": "string"
+                            },
+                            "lastname": {
+                                "type": "string"
+                            },
+                            "phonenumber": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "firstname",
+                            "lastname",
+                            "phonenumber",
+                            "department",
+                            "jobtitle"
+                        ],
+                        "type": "object"
+                    }
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {
+                "azuread": {
+                    "connectionId": "/subscriptions//resourceGroups/AutomatedOnBoarder/providers/Microsoft.Web/connections/azuread",
+                    "connectionName": "azuread",
+                    "id": "/subscriptions//providers/Microsoft.Web/locations/eastus2/managedApis/azuread"
+                },
+                "outlook": {
+                    "connectionId": "/subscriptions//resourceGroups/AutomatedOnBoarder/providers/Microsoft.Web/connections/outlook",
+                    "connectionName": "outlook",
+                    "id": "/subscriptions//providers/Microsoft.Web/locations/eastus2/managedApis/outlook"
+                }
+            }
+        }
+    }
+}

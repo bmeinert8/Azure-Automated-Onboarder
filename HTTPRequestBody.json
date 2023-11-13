@@ -1,0 +1,28 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "firstname": {
+        "type": "string"
+      },
+      "lastname": {
+        "type": "string"
+      },
+      "phonenumber": {
+        "type": "string"
+      },
+      "department": {
+        "type": "string"
+      },
+      "jobtitle": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "firstname",
+      "lastname",
+      "phonenumber",
+      "department",
+      "jobtitle"
+    ]
+  }
