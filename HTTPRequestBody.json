@@ -1,28 +1,28 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "object",
-    "properties": {
-      "firstname": {
-        "type": "string"
-      },
-      "lastname": {
-        "type": "string"
-      },
-      "phonenumber": {
-        "type": "string"
-      },
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "properties": {
       "department": {
-        "type": "string"
+          "type": "string"
+      },
+      "firstname": {
+          "type": "string"
       },
       "jobtitle": {
-        "type": "string"
+          "type": "string"
+      },
+      "lastname": {
+          "type": "string"
+      },
+      "phonenumber": {
+          "type": "string"
       }
-    },
-    "required": [
+  },
+  "required": [
       "firstname",
       "lastname",
-      "phonenumber",
       "department",
-      "jobtitle"
-    ]
-  }
+      "jobtitle",
+      "phonenumber"
+  ],
+  "type": "object"
+}
